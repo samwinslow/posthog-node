@@ -1,13 +1,13 @@
 'use strict'
 
-const assert = require('assert')
-const removeSlash = require('remove-trailing-slash')
-const axios = require('axios')
-const axiosRetry = require('axios-retry')
-const ms = require('ms')
-const version = require('./package.json').version
-const looselyValidate = require('./event-validation')
-const { FeatureFlagsPoller } = require('./feature-flags')
+import assert from 'assert'
+import removeSlash from 'remove-trailing-slash'
+import axios from 'axios'
+import axiosRetry from 'axios-retry'
+import ms from 'ms'
+const { version } = require('./package.json')
+import looselyValidate from './event-validation.js'
+import { FeatureFlagsPoller } from './feature-flags.js'
 
 const setImmediate = global.setImmediate || process.nextTick.bind(process)
 const noop = () => {}
@@ -359,4 +359,4 @@ class PostHog {
     }
 }
 
-module.exports = PostHog
+export default PostHog

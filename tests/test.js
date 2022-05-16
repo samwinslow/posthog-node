@@ -1,13 +1,13 @@
 const { spy, stub } = require('sinon')
-const bodyParser = require('body-parser')
-const express = require('express')
-const delay = require('delay')
-const pify = require('pify')
-const test = require('ava')
-const axios = require('axios')
-const PostHog = require('../index')
-const { version } = require('../package')
-const { mockSimpleFlagResponse } = require('./assets/mockFlagsResponse')
+import bodyParser from 'body-parser'
+import express from 'express'
+import delay from 'delay'
+import pify from 'pify'
+import test from 'ava'
+import axios from 'axios'
+import PostHog from '../index.js'
+const { version } = require('../package.json')
+import { mockSimpleFlagResponse } from './assets/mockFlagsResponse.js'
 
 const noop = () => {}
 
@@ -596,14 +596,18 @@ test('feature flags - simple flag calculation', async (t) => {
     const client = createClient({ personalApiKey: 'my very secret key' })
 
     // This tests that the hashing + mathematical operations across libs are consistent
-    let flagEnabled = client.featureFlagsPoller._isSimpleFlagEnabled({
+    let flagEnabled = await client.featureFlagsPoller._isSimpleFlagEnabled({
         key: 'a',
         distinctId: 'b',
         rolloutPercentage: 42,
     })
     t.is(flagEnabled, true)
 
-    flagEnabled = client.featureFlagsPoller._isSimpleFlagEnabled({ key: 'a', distinctId: 'b', rolloutPercentage: 40 })
+    flagEnabled = await client.featureFlagsPoller._isSimpleFlagEnabled({
+        key: 'a',
+        distinctId: 'b',
+        rolloutPercentage: 40
+    })
     t.is(flagEnabled, false)
 
     client.shutdown()

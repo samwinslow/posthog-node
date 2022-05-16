@@ -1,4 +1,4 @@
-const mockSimpleFlagResponse = {
+export const mockSimpleFlagResponse = {
     "count": 1,
     "next": null,
     "previous": null,
@@ -56,5 +56,3 @@ const mockSimpleFlagResponse = {
         },
     ]
 }
-
-module.exports = { mockSimpleFlagResponse }

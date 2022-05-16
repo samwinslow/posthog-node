@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 'use strict'
 
-const program = require('commander')
-const PostHog = require('.')
-const pkg = require('./package')
+import program from 'commander'
+import PostHog from './index.js'
+const pkg = require('./package.json')
 
 const toObject = (str) => JSON.parse(str)
 

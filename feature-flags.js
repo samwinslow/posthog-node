@@ -1,7 +1,7 @@
-const axios = require('axios')
-const crypto = require('crypto')
-const ms = require('ms')
-const version = require('./package.json').version
+import axios from 'axios'
+const crypto = require('expo-crypto')
+import ms from 'ms'
+const { version } = require('./package.json')
 
 const LONG_SCALE = 0xfffffffffffffff
 
@@ -17,7 +17,7 @@ class ClientError extends Error {
     }
 }
 
-class FeatureFlagsPoller {
+export class FeatureFlagsPoller {
     constructor({ pollingInterval, personalApiKey, projectApiKey, timeout, host, featureFlagCalledCallback }) {
         this.pollingInterval = pollingInterval
         this.personalApiKey = personalApiKey
@@ -55,7 +55,7 @@ class FeatureFlagsPoller {
         let isFlagEnabledResponse
 
         if (featureFlag.is_simple_flag) {
-            isFlagEnabledResponse = this._isSimpleFlagEnabled({
+            isFlagEnabledResponse = await this._isSimpleFlagEnabled({
                 key,
                 distinctId,
                 rolloutPercentage: featureFlag.rolloutPercentage,
@@ -105,13 +105,14 @@ class FeatureFlagsPoller {
 
     // sha1('a.b') should equal '69f6642c9d71b463485b4faf4e989dc3fe77a8c6'
     // integerRepresentationOfHashSubset / LONG_SCALE for sha1('a.b') should equal 0.4139158829615955
-    _isSimpleFlagEnabled({ key, distinctId, rolloutPercentage }) {
+    async _isSimpleFlagEnabled({ key, distinctId, rolloutPercentage }) {
         if (!rolloutPercentage) {
             return true
         }
-        const sha1Hash = crypto.createHash('sha1')
-        sha1Hash.update(`${key}.${distinctId}`)
-        const integerRepresentationOfHashSubset = parseInt(sha1Hash.digest('hex').slice(0, 15), 16)
+        // const sha1Hash = crypto.createHash('sha1')
+        // sha1Hash.update(`${key}.${distinctId}`)
+        const sha1Digest = await crypto.digestStringAsync('SHA-1', `${key}.${distinctId}`)
+        const integerRepresentationOfHashSubset = parseInt(sha1Digest.slice(0, 15), 16)
         return integerRepresentationOfHashSubset / LONG_SCALE <= rolloutPercentage / 100
     }
 
@@ -158,8 +159,4 @@ class FeatureFlagsPoller {
     stopPoller() {
         clearTimeout(this.poller)
     }
-}
-
-module.exports = {
-    FeatureFlagsPoller,
 }

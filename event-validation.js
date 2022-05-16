@@ -1,11 +1,9 @@
-var type = require('component-type')
-var join = require('join-component')
-var assert = require('assert')
+import * as type from 'component-type'
+import join from 'join-component'
+import assert from 'assert'
 
 // PostHog messages can be a maximum of 32 kB.
 var MAX_SIZE = 32 << 10
-
-module.exports = eventValidation
 
 /**
  * Validate an event.
@@ -119,3 +117,5 @@ function validateGenericEvent(event) {
         )
     }
 }
+
+export default eventValidation
